@@ -4,7 +4,9 @@ const cors = require('cors');
 const uniswapEthController = require("./controller/uniswap.eth.controller")
 
 // Define the endpoint for getting the current price of ETH/USDC
-app.get('/eth-usdc-price',uniswapEthController.getPrice);
+app.get('/weth/dai/price',uniswapEthController.getPrice);
+app.get('/uniswaw/yield/values/weth',uniswapEthController.getYieldForWETH);
+app.get('/uniswaw/yield/values/dai',uniswapEthController.getYieldForDai);
 
 // Start the server
 const port = 8080;
