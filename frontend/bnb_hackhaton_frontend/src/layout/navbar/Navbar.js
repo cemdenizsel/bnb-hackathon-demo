@@ -1,14 +1,19 @@
 import Navbar from 'react-bootstrap/Navbar';
-import {useState} from "react";
-import React, {Component} from 'react';
-import {NavLink} from "react-router-dom";
+import { useState } from "react";
+import React, { Component } from 'react';
+import { NavLink } from "react-router-dom";
+import '@particle-network/connect-react-ui/dist/index.css';
+import { ConnectButton } from '@particle-network/connect-react-ui';
+import { useConnectKit } from '@particle-network/connect-react-ui';
+
 
 function CustomNavbar() {
-    const [show, setShow] = useState(false);
-    const callWallet = () =>{
-            console.log("CEmo geldi");
-    }
-    const handleShow = () => setShow(true);
+
+    //use this in react component.
+    const connectKit = useConnectKit();
+    const userInfo = connectKit.particle.userInfo;
+    console.log(userInfo);
+  
     return (
         <Navbar bg="danger" className="navbar-dark navbar-expand-lg fixed-top bg- portfolio-navbar gradient">
             <div className="container"><a className="navbar-brand logo" href="#">Brand</a>
@@ -17,10 +22,7 @@ function CustomNavbar() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav ms-auto">
-                        <NavLink onClick={callWallet} className="nav-link active" to="/">
-                            <li className="nav-item">Connect Wallet</li>
-                        </NavLink>
-                        
+                     <ConnectButton />;
                     </ul>
                 </div>
             </div>
