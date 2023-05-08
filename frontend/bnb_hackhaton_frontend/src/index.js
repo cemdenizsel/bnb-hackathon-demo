@@ -18,7 +18,7 @@ root.render(
       options={{
         projectId: '64c15dc9-8f84-4f6f-bf42-7936f544561c',
         clientKey: 'cby7kPIMuvC85b0eAJLIUWA1imXcgCO9r2lQJ16i',
-        appId: 'sOniOyn4zGZzWA603IcyJmvvcuk1CSVWJIxjSVIL',
+        appId: 'd0effc6b-c39a-4594-bf70-aaad85dd7767',
         chains: [
           Ethereum,
           EthereumGoerli
