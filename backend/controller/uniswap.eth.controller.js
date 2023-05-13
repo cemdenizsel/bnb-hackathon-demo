@@ -4,7 +4,6 @@ const Web3 = require('web3');
 const ethers = require('ethers');  
 const fs = require('fs');
 
-
 const url = 'https://weathered-still-liquid.ethereum-goerli.discover.quiknode.pro/5df462016884a24c284d2989a0b577628b06aefc/';
 const web3 = new Web3(new Web3.providers.HttpProvider('https://rpc.ankr.com/eth'));
 const customHttpProvider = new ethers.providers.JsonRpcProvider(url);
@@ -15,6 +14,9 @@ const tokenDecimals = 18; // replace with the number of decimals for your token
 // get the Uniswap v2 router contract address
 const uniswapRouterAddress = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 // create a new instance of the Uniswap v2 router contract
+
+const USDCAddress = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48";
+const USDTAddress = "0xdAC17F958D2ee523a2206206994597C13D831ec7";
 
 let uniswapRouter;
 
@@ -54,6 +56,48 @@ exports.getYieldForDai = async (req,res,next) => {
         console.error(err);
         res.status(500).send('An error occurred while getting the price.');
     }
+}
+
+exports.getYieldForUSDC = async (req,res,next) => {
+    /*let response = await _getYieldForUSDC();
+    return res.send(`Yield value: ${response}`);*/
+    try{
+        const [USDC, USDT] = await Promise.all([
+            Fetcher.fetchTokenData(ChainId.MAINNET, USDCAddress),
+            Fetcher.fetchTokenData(ChainId.MAINNET, USDTAddress),
+        ]);  
+        console.log(USDC);
+        
+        const pair = await Fetcher.fetchPairData(USDC, USDT);
+    
+        // Get the route for the desired pair
+        const route = new Route([pair], USDT);
+        
+        // Assuming you want the yield value in terms of USDT
+        const USDTAmount = 1; // Amount of USDT to calculate yield value for
+        const yieldValue = route.midPrice.toSignificant(6) * USDTAmount;
+          
+        console.log('Yield value of', USDTAmount, 'USDT in terms of USDC:', yieldValue);
+        res.statusCode = 200;
+        res.end(yieldValue.toString());
+    }catch(err){
+        console.log(err);
+    }
+    
+}
+
+const _getYieldForUSDC = async () =>{
+    const provider = new ethers.providers.JsonRpcProvider(url);
+    const usdcAddress = USDCAddress;
+    const usdtAddress = USDTAddress;
+    const usdcToken = new Token(ChainId.GÖRLI, usdcAddress, 6);
+    const usdtToken = new Token(ChainId.GÖRLI, usdtAddress, 6);
+    console.error(usdtToken);
+    const pair = await Fetcher.fetchPairData(usdcToken, usdtToken, customHttpProvider);
+    console.error(pair);
+    const liquidity = pair.reserve0 / pair.reserve1;
+    console.log(`The liquidity of ${tokenAddress} on Uniswap (dai/weth) is ${liquidity.toSignificant(6)}`);
+    return liquidity.toSignificant(6);
 }
 
 const _getPrice = async () => {
