@@ -3,9 +3,10 @@ import React, { useEffect, useState } from "react";
 import {Row, Col} from 'react-bootstrap';
 
 const Home = () =>{
-    const [res,setRes] = useState("Wait....");
+    const [resUniswap,setResUniswap] = useState("Wait for uniswap....");
+    const [resPancake,setPancake] = useState("Wait for pancake....");
     const getUniswapValues = useEffect(()=>{
-        async function fetchData() {
+        async function fetchDataForUniswap() {
             let instanceOfAxious = axios.create();
             instanceOfAxious.interceptors.request.use(
                 function(config) {
@@ -17,10 +18,24 @@ const Home = () =>{
                 }
             );
             let path = "http://localhost:8080/uniswap/yield/values/usdc-usdt"
-            setRes((await instanceOfAxious.get(path)).data);
-
+            setResUniswap((await instanceOfAxious.get(path)).data);
         }
-        fetchData();
+        async function fetchDataForPancake() {
+            let instanceOfAxious = axios.create();
+            instanceOfAxious.interceptors.request.use(
+                function(config) {
+                    config.headers["Access-Control-Allow-Origin"] =  "*";
+                    return config;
+                },
+                function(error) {
+                    return Promise.reject(error);
+                }
+            );
+            let path = "http://localhost:8080/pancake"
+            setPancake((await instanceOfAxious.get(path)).data);
+        }
+        fetchDataForUniswap();
+        fetchDataForPancake();
     },[]);
 
     return (
@@ -28,7 +43,9 @@ const Home = () =>{
             <Row className="mx-5" style={{marginTop:"100px"}}>
                 <h1>Lets trade</h1>
                 <div>
-                    {res}
+                    {resUniswap}
+                    <hr/>
+                    {resPancake}
                 </div>
             </Row>
         </React.Fragment>

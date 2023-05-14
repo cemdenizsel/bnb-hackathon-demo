@@ -34,9 +34,7 @@ exports.getPrice = async (req, res, next) => {
 exports.getYieldForWETH = async (req, res, next) => {
     try {
         const tradingVolume = await uniswapPool();
-        console.log(tradingVolume);
         const liquidity = await getLiquidityOnUniswap(2);
-        console.log(liquidity);
         const yieldValue = tradingVolume / liquidity;
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.send(`Yield value for weth: ${yieldValue}`);
@@ -49,12 +47,10 @@ exports.getYieldForWETH = async (req, res, next) => {
 exports.getYieldForDai = async (req, res, next) => {
     try {
         const tradingVolume = await uniswapPool();
-        console.log(tradingVolume);
         const liquidity = await getLiquidityOnUniswap(1);
-        console.log(liquidity);
         const yieldValue = tradingVolume / liquidity;
         res.setHeader('Access-Control-Allow-Origin', '*');
-        res.send(`Yield value for dai: ${yieldValue}`);
+        res.send(`Yield value for USDC/USDT pool for uniswap: ${yieldValue}`);
     } catch (err) {
         console.error(err);
         res.status(500).send('An error occurred while getting the price.');
@@ -69,7 +65,6 @@ exports.getYieldForUSDC = async (req, res, next) => {
             Fetcher.fetchTokenData(ChainId.MAINNET, USDCAddress),
             Fetcher.fetchTokenData(ChainId.MAINNET, USDTAddress),
         ]);
-        console.log(USDC);
 
         const pair = await Fetcher.fetchPairData(USDC, USDT);
 
@@ -80,7 +75,6 @@ exports.getYieldForUSDC = async (req, res, next) => {
         const USDTAmount = 1; // Amount of USDT to calculate yield value for
         const yieldValue = route.midPrice.toSignificant(6) * USDTAmount;
 
-        console.log('Yield value of', USDTAmount, 'USDT in terms of USDC:', yieldValue);
         res.statusCode = 200;
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.end(yieldValue.toString());
@@ -101,7 +95,6 @@ const _getYieldForUSDC = async () => {
     const pair = await Fetcher.fetchPairData(usdcToken, usdtToken, customHttpProvider);
     console.error(pair);
     const liquidity = pair.reserve0 / pair.reserve1;
-    console.log(`The liquidity of ${tokenAddress} on Uniswap (dai/weth) is ${liquidity.toSignificant(6)}`);
     return liquidity.toSignificant(6);
 }
 
@@ -157,7 +150,6 @@ async function getLiquidityOnUniswap(tokenNumber) {
     const weth = WETH[chainId];
     const pair = await Fetcher.fetchPairData(dai, weth, customHttpProvider);
     const liquidity = tokenNumber == 1 ? pair.reserve0 : pair.reserve1;
-    console.log(`The liquidity of ${tokenAddress} on Uniswap (dai/weth) is ${liquidity.toSignificant(6)}`);
     return liquidity.toSignificant(6);
 }
 
