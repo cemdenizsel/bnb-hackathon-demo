@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import MainLayout from "./layout/mainlayout/MainLayout";
 import Home from './feature/home/Home';
+import Lending from './feature/lending/Lending';
 
 
 
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
     children:[
       {
         index:true,
+        element:<Lending/>
+      },
+      {
+        path: "app",
         element:<Home/>
       }
     ]
